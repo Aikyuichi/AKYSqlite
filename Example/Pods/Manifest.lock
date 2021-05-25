@@ -1,0 +1,16 @@
+PODS:
+  - AKYSqlite (0.1.0)
+
+DEPENDENCIES:
+  - AKYSqlite (from `../`)
+
+EXTERNAL SOURCES:
+  AKYSqlite:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  AKYSqlite: 09bda37bb9836ddd94e9d7d9786a10e8b82e99a9
+
+PODFILE CHECKSUM: d9d10ea5eecb570aeb580991df1d7720cbb5e752
+
+COCOAPODS: 1.10.1

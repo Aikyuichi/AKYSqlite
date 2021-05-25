@@ -6,13 +6,15 @@
 //  Copyright (c) 2021 Aikyuichi. All rights reserved.
 //
 
-#import "AKYAppDelegate.h"
+#import "AppDelegate.h"
+#import <AKYSqlite/AKYSqlite.h>
 
-@implementation AKYAppDelegate
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    [AKYSqlite registerDatabaseFromMainBundleWithName:@"main.db" forKey:@"DB_MAIN"];
+    
     return YES;
 }
 

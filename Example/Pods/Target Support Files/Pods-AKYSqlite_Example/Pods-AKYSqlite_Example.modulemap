@@ -1,0 +1,6 @@
+framework module Pods_AKYSqlite_Example {
+  umbrella header "Pods-AKYSqlite_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}
