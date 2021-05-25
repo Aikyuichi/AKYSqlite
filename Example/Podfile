@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'AKYSqlite_Example' do
+  pod 'AKYSqlite', :path => '../'
+
+  target 'AKYSqlite_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
