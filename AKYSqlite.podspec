@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'AKYSqlite'
   s.version          = '0.1.5'
-  s.summary          = 'A short description of AKYSqlite.'
+  s.summary          = 'A small library to query sqlite databases.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
