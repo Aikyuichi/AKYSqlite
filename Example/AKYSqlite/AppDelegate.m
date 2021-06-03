@@ -13,7 +13,16 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [AKYSqlite registerDatabaseFromMainBundleWithName:@"main.db" forKey:@"DB_MAIN"];
+    [AKYSqlite registerDatabaseWithName:@"main.db" fromMainBundleForKey:@"DB_MAIN"];
+    [AKYSqlite registerDatabaseWithName:@"main.db" fromDocumentDirectoryForKey:@"DB_DOC"];
+    
+    NSFileManager *manager = [NSFileManager defaultManager];
+    NSString *dbMainPath = [AKYSqlite databasePathForKey:@"DB_MAIN"];
+    NSString *dbDocPath = [AKYSqlite databasePathForKey:@"DB_DOC"];
+    if ([manager fileExistsAtPath:dbMainPath]) {
+        [manager removeItemAtPath:dbDocPath error:NULL];
+    }
+    [manager copyItemAtPath:dbMainPath  toPath:dbDocPath error:NULL];
     
     return YES;
 }

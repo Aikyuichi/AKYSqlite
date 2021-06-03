@@ -11,12 +11,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Contact : NSObject
+@interface Person : NSObject
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *lastname;
 
-+ (NSArray<Contact *> *)list;
++ (NSArray<Person *> *)list;
 
 @end
 

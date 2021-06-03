@@ -10,14 +10,22 @@
 #import <Foundation/Foundation.h>
 #import "AKYDatabase.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface AKYSqlite : NSObject
 
-+ (void)registerDatabaseAtPath:(NSString *)path forKey:(NSString *)key;
++ (void)registerDatabasePath:(NSString *)path forKey:(NSString *)key;
 
-+ (void)registerDatabaseFromMainBundleWithName:(NSString *)name forKey:(NSString *)key;
++ (void)registerDatabaseWithName:(NSString *)name fromMainBundleForKey:(NSString *)key;
 
-+ (void)registerDatabaseFromDocumentDirectoryWithName:(NSString *)name forKey:(NSString *)key;
++ (void)registerDatabaseWithName:(NSString *)name fromDocumentDirectoryForKey:(NSString *)key;
+
++ (void)unregisterDatabaseForKey:(NSString *)key;
+
++ (NSString *)databasePathForKey:(NSString *)key;
 
 + (void)logError;
 
 @end
+
+NS_ASSUME_NONNULL_END

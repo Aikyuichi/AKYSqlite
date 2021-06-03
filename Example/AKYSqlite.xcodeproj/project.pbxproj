@@ -21,9 +21,10 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
-		64312F63265CA68C00DD150A /* Contact.m in Sources */ = {isa = PBXBuildFile; fileRef = 64312F62265CA68C00DD150A /* Contact.m */; };
+		64312F63265CA68C00DD150A /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 64312F62265CA68C00DD150A /* Person.m */; };
 		64312F65265CA88500DD150A /* main.db in Resources */ = {isa = PBXBuildFile; fileRef = 64312F64265CA88500DD150A /* main.db */; };
-		64312F68265CAA9A00DD150A /* ContactsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 64312F67265CAA9A00DD150A /* ContactsTVC.m */; };
+		64312F68265CAA9A00DD150A /* PersonsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 64312F67265CAA9A00DD150A /* PersonsTVC.m */; };
+		649DB5C9265DDBEE00233B4A /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 649DB5C8265DDBEE00233B4A /* Group.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 /* End PBXBuildFile section */
@@ -57,11 +58,13 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		64312F61265CA68C00DD150A /* Contact.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Contact.h; sourceTree = "<group>"; };
-		64312F62265CA68C00DD150A /* Contact.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Contact.m; sourceTree = "<group>"; };
+		64312F61265CA68C00DD150A /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		64312F62265CA68C00DD150A /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		64312F64265CA88500DD150A /* main.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = main.db; sourceTree = "<group>"; };
-		64312F66265CAA9A00DD150A /* ContactsTVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ContactsTVC.h; sourceTree = "<group>"; };
-		64312F67265CAA9A00DD150A /* ContactsTVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ContactsTVC.m; sourceTree = "<group>"; };
+		64312F66265CAA9A00DD150A /* PersonsTVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersonsTVC.h; sourceTree = "<group>"; };
+		64312F67265CAA9A00DD150A /* PersonsTVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PersonsTVC.m; sourceTree = "<group>"; };
+		649DB5C7265DDBEE00233B4A /* Group.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Group.h; sourceTree = "<group>"; };
+		649DB5C8265DDBEE00233B4A /* Group.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8F9D1EB1C5437378752594AB /* Pods_AKYSqlite_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AKYSqlite_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,12 +140,14 @@
 		6003F593195388D20070C39A /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				64312F61265CA68C00DD150A /* Contact.h */,
-				64312F62265CA68C00DD150A /* Contact.m */,
+				64312F61265CA68C00DD150A /* Person.h */,
+				64312F62265CA68C00DD150A /* Person.m */,
+				649DB5C7265DDBEE00233B4A /* Group.h */,
+				649DB5C8265DDBEE00233B4A /* Group.m */,
 				6003F59C195388D20070C39A /* AppDelegate.h */,
 				6003F59D195388D20070C39A /* AppDelegate.m */,
-				64312F66265CAA9A00DD150A /* ContactsTVC.h */,
-				64312F67265CAA9A00DD150A /* ContactsTVC.m */,
+				64312F66265CAA9A00DD150A /* PersonsTVC.h */,
+				64312F67265CAA9A00DD150A /* PersonsTVC.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
@@ -375,9 +380,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64312F68265CAA9A00DD150A /* ContactsTVC.m in Sources */,
+				64312F68265CAA9A00DD150A /* PersonsTVC.m in Sources */,
 				6003F59E195388D20070C39A /* AppDelegate.m in Sources */,
-				64312F63265CA68C00DD150A /* Contact.m in Sources */,
+				649DB5C9265DDBEE00233B4A /* Group.m in Sources */,
+				64312F63265CA68C00DD150A /* Person.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

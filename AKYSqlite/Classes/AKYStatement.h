@@ -11,9 +11,27 @@
 #import <sqlite3.h>
 #import "AKYParameter.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
+@protocol AKYTransaction <NSObject>
+
+- (void)rollback;
+
+@end
+
 @interface AKYStatement : NSObject
 
+@property (nonatomic, weak) id<AKYTransaction> transactionDelegate;
+
 + (instancetype)statementWithSqlite:(sqlite3 *)sqlite query:(NSString *)query;
+
+#pragma mark - Helpers
+
+@property (nonatomic, readonly) NSString *expandedQuery API_AVAILABLE(macos(10.12), ios(10.0));
+
+@property (nonatomic, readonly) NSString *uncompiledSql;
+
+@property (nonatomic, readonly) int columnCount;
 
 #pragma mark Core
 
@@ -25,96 +43,82 @@
 
 #pragma mark Binding (index)
 
-- (void)bindNULLOnIndex:(int)index;
+- (void)bindNULLForIndex:(int)index;
 
-- (void)bindIntegerOnIndex:(int)index value:(NSInteger)value;
+- (void)bindInteger:(NSInteger)value forIndex:(int)index;
 
-- (void)bindStringOnIndex:(int)index value:(NSString *)value;
+- (void)bindString:(nullable NSString *)value forIndex:(int)index;
 
-- (void)bindStringOrNULLOnIndex:(int)index value:(NSString *)value;
+- (void)bindDouble:(double)value forIndex:(int)index;
 
-- (void)bindDoubleOnIndex:(int)index value:(double)value;
+- (void)bindBOOL:(BOOL)value forIndex:(int)index;
 
-- (void)bindBOOLOnIndex:(int)index value:(BOOL)value;
+- (void)bindData:(nullable NSData *)value forIndex:(int)index;
 
-- (void)bindDataOnIndex:(int)index value:(NSData *)value;
-
-- (void)bindDataOrNULLOnIndex:(int)index value:(NSData *)value;
-
-- (void)bindParameterOnIndex:(int)index value:(AKYParameter *)value;
+- (void)bindParameter:(AKYParameter *)value forIndex:(int)index;
 
 #pragma mark Binding (name)
 
-- (void)bindNULLWithName:(NSString *)name;
+- (void)bindNULLForName:(NSString *)name;
 
-- (void)bindIntegerWithName:(NSString *)name value:(NSInteger)value;
+- (void)bindInteger:(NSInteger)value forName:(NSString *)name;
 
-- (void)bindStringWithName:(NSString *)name value:(NSString *)value;
+- (void)bindString:(nullable NSString *)value forName:(NSString *)name;
 
-- (void)bindStringOrNULLWithName:(NSString *)name value:(NSString *)value;
+- (void)bindDouble:(double)value forName:(NSString *)name;
 
-- (void)bindDoubleWithName:(NSString *)name value:(double)value;
+- (void)bindBOOL:(BOOL)value forName:(NSString *)name;
 
-- (void)bindBOOLWithName:(NSString *)name value:(BOOL)value;
+- (void)bindData:(nullable NSData *)value forName:(NSString *)name;
 
-- (void)bindDataWithName:(NSString *)name value:(NSData *)value;
-
-- (void)bindDataOrNULLWithName:(NSString *)name value:(NSData *)value;
-
-- (void)bindParameterWithName:(NSString *)name value:(AKYParameter *)value;
+- (void)bindParameter:(AKYParameter *)value forName:(NSString *)name;
 
 #pragma mark Result (index)
 
-- (BOOL)isColumnNULLOnIndex:(int)index;
+- (BOOL)isNULLForIndex:(int)index;
 
-- (NSString *)getColumnNameOnIndex:(int)index;
+- (NSString *)getColumnNameForIndex:(int)index;
 
-- (NSInteger)getColumnIntegerOnIndex:(int)index;
+- (NSInteger)getIntegerForIndex:(int)index;
 
-- (NSInteger)getColumnIntegerOrDefaultOnIndex:(int)index;
+- (NSInteger)getIntegerOrDefaultForIndex:(int)index;
 
-- (NSString *)getColumnStringOnIndex:(int)index;
+- (NSString *)getStringForIndex:(int)index;
 
-- (NSString *)getColumnStringOrDefaultOnIndex:(int)index;
+- (NSString *)getStringOrDefaultForIndex:(int)index;
 
-- (double)getColumnDoubleOnIndex:(int)index;
+- (double)getDoubleForIndex:(int)index;
 
-- (BOOL)getColumnBOOLOnIndex:(int)index;
+- (BOOL)getBOOLForIndex:(int)index;
 
-- (BOOL)getColumnBOOLOrDefaultOnIndex:(int)index;
+- (BOOL)getBOOLOrDefaultForIndex:(int)index;
 
-- (NSData *)getColumnDataOnIndex:(int)index;
+- (NSData *)getDataForIndex:(int)index;
 
-- (NSObject *)getColumnValueOnIndex:(int)index;
+- (NSObject *)getValueForIndex:(int)index;
 
 #pragma mark Result (name)
 
-- (BOOL)isColumnNULLWithName:(NSString *)name;
+- (BOOL)isNULLForName:(NSString *)name;
 
-- (NSInteger)getColumnIntegerWithName:(NSString *)name;
+- (NSInteger)getIntegerForName:(NSString *)name;
 
-- (NSInteger)getColumnIntegerOrDefaultWithName:(NSString *)name;
+- (NSInteger)getIntegerOrDefaultForName:(NSString *)name;
 
-- (NSString *)getColumnStringWithName:(NSString *)name;
+- (NSString *)getStringForName:(NSString *)name;
 
-- (NSString *)getColumnStringOrDefaultWithName:(NSString *)name;
+- (NSString *)getStringOrDefaultForName:(NSString *)name;
 
-- (double)getColumnDoubleWithName:(NSString *)name;
+- (double)getDoubleForName:(NSString *)name;
 
-- (BOOL)getColumnBOOLWithName:(NSString *)name;
+- (BOOL)getBOOLForName:(NSString *)name;
 
-- (BOOL)getColumnBOOLOrDefaultWitnName:(NSString *)name;
+- (BOOL)getBOOLOrDefaultForName:(NSString *)name;
 
-- (NSData *)getColumnDataWithName:(NSString *)name;
+- (NSData *)getDataForName:(NSString *)name;
 
-- (NSObject *)getColumnValueWithName:(NSString *)name;
-
-#pragma mark - Helpers
-
-@property (nonatomic, readonly) NSString *expandedQuery API_AVAILABLE(macos(10.12), ios(10.0));
-
-@property (nonatomic, readonly) NSString *uncompiledSql;
-
-@property (nonatomic, readonly) int columnCount;
+- (NSObject *)getValueForName:(NSString *)name;
 
 @end
+
+NS_ASSUME_NONNULL_END

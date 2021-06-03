@@ -9,10 +9,12 @@
 
 #import "AKYDatabase.h"
 
-@interface AKYDatabase()
+@interface AKYDatabase() <AKYTransaction>
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic) sqlite3 *sqlite;
+@property (nonatomic) BOOL transactional;
+@property (nonatomic) BOOL rollbackTransaction;
 
 @end
 
@@ -25,8 +27,9 @@
 }
 
 + (instancetype)databaseForKey:(NSString *)key {
-    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-    AKYDatabase *database = [AKYDatabase databaseAtPath:[preferences objectForKey:key]];
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSDictionary *dbPaths = [prefs objectForKey:@"AKYSqlite_db_paths"];
+    AKYDatabase *database = [AKYDatabase databaseAtPath:dbPaths[key]];
     return database;
 }
 
@@ -39,14 +42,37 @@
 }
 
 - (BOOL)openInReadonlyMode {
-    if (sqlite3_open_v2(self.path.UTF8String, &_sqlite, SQLITE_READONLY, NULL) != SQLITE_OK) {
+    if (sqlite3_open_v2(self.path.UTF8String, &_sqlite, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
         NSLog(@"error: %s", sqlite3_errmsg(self.sqlite));
         return NO;
     }
     return YES;
 }
 
+- (BOOL)openTransaction {
+    if ([self open]) {
+        [self executeQuery:@"BEGIN TRANSACTION"];
+        self.transactional = YES;
+        return YES;
+    }
+    return NO;
+}
+
+- (void)closeTransaction {
+    if (self.transactional) {
+        if (self.rollbackTransaction) {
+            [self executeQuery:@"ROLLBACK"];
+            NSLog(@"Rollback transaction");
+        } else {
+            [self executeQuery:@"COMMIT"];
+        }
+    }
+    self.transactional = NO;
+    self.rollbackTransaction = NO;
+}
+
 - (void)close {
+    [self closeTransaction];
     sqlite3_close(self.sqlite);
 }
 
@@ -60,12 +86,20 @@
     [self executeQuery:sql];
 }
 
-- (NSInteger)getLastInsertRowId {
+- (void)rollback {
+    self.rollbackTransaction = YES;
+}
+
+- (NSInteger)lastInsertRowId {
     return sqlite3_last_insert_rowid(self.sqlite);
 }
 
 - (AKYStatement *)prepareStatement:(NSString *)query {
-    return [AKYStatement statementWithSqlite:self.sqlite query:query];
+    AKYStatement *statement = [AKYStatement statementWithSqlite:self.sqlite query:query];
+    if (self.transactional) {
+        statement.transactionDelegate = self;
+    }
+    return statement;
 }
 
 - (void)executeQuery:(NSString *)query {
@@ -83,7 +117,7 @@
         if (statement != nil) {
             for (int i = 0; i < parameters.count; i++) {
                 AKYParameter *parameter = parameters[i];
-                [statement bindParameterOnIndex:i + 1 value:parameter];
+                [statement bindParameter:parameter forIndex:i + 1];
             }
             [statement step];
             [statement finalize];
@@ -98,7 +132,7 @@
         if (statement != nil) {
             for (NSString * key in parameters.allKeys) {
                 AKYParameter *parameter = parameters[key];
-                [statement bindParameterWithName:key value:parameter];
+                [statement bindParameter:parameter forName:key];
             }
             [statement step];
             [statement finalize];
@@ -112,14 +146,14 @@
     if (statement != nil) {
         for (int i = 0; i < parameters.count; i++) {
             AKYParameter *parameter = parameters[i];
-            [statement bindParameterOnIndex:i + 1 value:parameter];
+            [statement bindParameter:parameter forIndex:i + 1];
         }
         @autoreleasepool {
             while ([statement step]) {
                 NSMutableDictionary *row = [NSMutableDictionary dictionary];
                 for (int i = 0; i < statement.columnCount; i++) {
-                    NSString *columnName = [statement getColumnNameOnIndex:i];
-                    row[columnName] = [statement getColumnValueOnIndex:i];
+                    NSString *columnName = [statement getColumnNameForIndex:i];
+                    row[columnName] = [statement getValueForIndex:i];
                 }
                 [result addObject:row];
             }
@@ -135,14 +169,14 @@
     if (statement != nil) {
         for (NSString *key in parameters.allKeys) {
             AKYParameter *parameter = parameters[key];
-            [statement bindParameterWithName:key value:parameter];
+            [statement bindParameter:parameter forName:key];
         }
         @autoreleasepool {
             while ([statement step]) {
                 NSMutableDictionary *row = [NSMutableDictionary dictionary];
                 for (int i = 0; i < statement.columnCount; i++) {
-                    NSString *columnName = [statement getColumnNameOnIndex:i];
-                    row[columnName] = [statement getColumnValueOnIndex:i];
+                    NSString *columnName = [statement getColumnNameForIndex:i];
+                    row[columnName] = [statement getValueForIndex:i];
                 }
                 [result addObject:row];
             }

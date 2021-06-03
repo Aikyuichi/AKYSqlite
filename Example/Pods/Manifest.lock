@@ -1,5 +1,5 @@
 PODS:
-  - AKYSqlite (0.1.0)
+  - AKYSqlite (0.1.5)
 
 DEPENDENCIES:
   - AKYSqlite (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AKYSqlite: 09bda37bb9836ddd94e9d7d9786a10e8b82e99a9
+  AKYSqlite: 4387fde9fde21bd33dd9f96f5e8a1a0f1ddb90b8
 
 PODFILE CHECKSUM: d9d10ea5eecb570aeb580991df1d7720cbb5e752
 

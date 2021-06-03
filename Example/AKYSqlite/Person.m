@@ -6,20 +6,20 @@
 //  Copyright © 2021 Aikyuichi. All rights reserved.
 //
 
-#import "Contact.h"
+#import "Person.h"
 
-@implementation Contact
+@implementation Person
 
-+ (NSArray<Contact *> *)list {
++ (NSArray<Person *> *)list {
     NSMutableArray *persons = [NSMutableArray array];
     AKYDatabase *db = [AKYDatabase databaseForKey:@"DB_MAIN"];
-    [db open];
+    [db openInReadonlyMode];
     AKYStatement *stmt = [db prepareStatement:@"SELECT name, lastname FROM person ORDER BY name"];
     if (stmt != nil) {
         while ([stmt step]) {
-            Contact *person = [[Contact alloc] init];
-            person.name = [stmt getColumnStringWithName:@"name"];
-            person.lastname = [stmt getColumnStringOrDefaultWithName:@"lastname"];
+            Person *person = [[Person alloc] init];
+            person.name = [stmt getStringForName:@"name"];
+            person.lastname = [stmt getStringOrDefaultForName:@"lastname"];
             [persons addObject:person];
         }
         [stmt finalize];

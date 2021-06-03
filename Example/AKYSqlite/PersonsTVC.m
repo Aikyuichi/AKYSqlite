@@ -6,21 +6,23 @@
 //  Copyright © 2021 Aikyuichi. All rights reserved.
 //
 
-#import "ContactsTVC.h"
-#import "Contact.h"
+#import "PersonsTVC.h"
+#import "Person.h"
+#import "Group.h"
 
-@interface ContactsTVC ()
+@interface PersonsTVC ()
 
 @property (nonatomic) NSArray *contacts;
 
 @end
 
-@implementation ContactsTVC
+@implementation PersonsTVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.contacts = [Contact list];
+    self.contacts = [Person list];
+    [Group groupTest];
 }
 
 #pragma mark - Table view data source
@@ -36,8 +38,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellId = @"ContactCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId forIndexPath:indexPath];
-    Contact *contact = self.contacts[indexPath.row];
-    cell.textLabel.text = contact.name;
+    Person *contact = self.contacts[indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", contact.name, contact.lastname];
     return cell;
 }
 

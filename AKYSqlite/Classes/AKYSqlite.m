@@ -9,23 +9,40 @@
 
 #import "AKYSqlite.h"
 
+NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
+
 @implementation AKYSqlite
 
-+ (void)registerDatabaseAtPath:(NSString *)path forKey:(NSString *)key {
-    NSUserDefaults *preferences = [NSUserDefaults standardUserDefaults];
-    [preferences setObject:path forKey:key];
++ (void)registerDatabasePath:(NSString *)path forKey:(NSString *)key {
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dbPaths = [NSMutableDictionary dictionaryWithDictionary:[prefs objectForKey:AKYSQLITE_DB_PATHS]];
+    [dbPaths setObject:path forKey:key];
+    [prefs setObject:dbPaths forKey:AKYSQLITE_DB_PATHS];
 }
 
-+ (void)registerDatabaseFromMainBundleWithName:(NSString *)name forKey:(NSString *)key {
-    NSBundle *thisBundle = [NSBundle mainBundle];
-    NSString *dbPath = [thisBundle pathForResource:[[name lastPathComponent] stringByDeletingPathExtension] ofType:[name pathExtension]];
-    [self registerDatabaseAtPath:dbPath forKey:key];
++ (void)registerDatabaseWithName:(NSString *)name fromMainBundleForKey:(NSString *)key {
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    NSString *dbPath = [mainBundle pathForResource:[name.lastPathComponent stringByDeletingPathExtension] ofType:name.pathExtension];
+    [self registerDatabasePath:dbPath forKey:key];
 }
 
-+ (void)registerDatabaseFromDocumentDirectoryWithName:(NSString *)name forKey:(NSString *)key {
-    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
++ (void)registerDatabaseWithName:(NSString *)name fromDocumentDirectoryForKey:(NSString *)key {
+    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
     NSString *dbPath = [documentPath stringByAppendingPathComponent:name];
-    [self registerDatabaseAtPath:dbPath forKey:key];
+    [self registerDatabasePath:dbPath forKey:key];
+}
+
++ (void)unregisterDatabaseForKey:(NSString *)key {
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dbPaths = [NSMutableDictionary dictionaryWithDictionary:[prefs objectForKey:AKYSQLITE_DB_PATHS]];
+    [dbPaths removeObjectForKey:key];
+    [prefs setObject:dbPaths forKey:AKYSQLITE_DB_PATHS];
+}
+
++ (NSString *)databasePathForKey:(NSString *)key {
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *dbPaths = [NSMutableDictionary dictionaryWithDictionary:[prefs objectForKey:AKYSQLITE_DB_PATHS]];
+    return dbPaths[key];
 }
 
 + (void)logError {

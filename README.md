@@ -3,11 +3,11 @@
 <!--[![CI Status](https://img.shields.io/travis/Aikyuichi/AKYSqlite.svg?style=flat)](https://travis-ci.org/Aikyuichi/AKYSqlite)-->
 [![Version](https://img.shields.io/cocoapods/v/AKYSqlite.svg?style=flat)](https://cocoapods.org/pods/AKYSqlite)
 [![License](https://img.shields.io/cocoapods/l/AKYSqlite.svg?style=flat)](https://cocoapods.org/pods/AKYSqlite)
-<!-- [![Platform](https://img.shields.io/cocoapods/p/AKYSqlite.svg?style=flat)](https://cocoapods.org/pods/AKYSqlite) -->
+[![Platform](https://img.shields.io/cocoapods/p/AKYSqlite.svg?style=flat)](https://cocoapods.org/pods/AKYSqlite)
 
-## Example
+<!--## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example project, clone the repo, and run `pod install` from the Example directory first.-->
 
 ## Installation
 
@@ -37,10 +37,10 @@ AKYDatabase *db = [AKYDatabase databaseAtPath:dbPath];
 [db open];
 AKYStatement *stmt = [db prepareStatement:@"SELECT name, lastname FROM person WHERE person_id = $id"];
 if (stmt != nil) {
-    [stmt bindIntegerWithName:@"$id" value:1];
+    [stmt bindInteger:1 forName:@"$id"];
     while ([stmt step]) {
-        NSString *name = [stmt getColumnStringWithName:@"name"];
-        NSString *lastname = [stmt getColumnStringWithName:@"lastname"];
+        NSString *name = [stmt getStringforName:@"name"];
+        NSString *lastname = [stmt getStringOrDefaultforName:@"lastname"];
     }
     [stmt finalize];
 }

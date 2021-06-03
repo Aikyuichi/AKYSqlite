@@ -37,6 +37,27 @@
     return statement;
 }
 
+#pragma mark Helpers
+
+- (NSString *)expandedQuery {
+    return @((char *)sqlite3_expanded_sql(self.sqliteStatement));
+}
+
+- (int)columnCount {
+    return sqlite3_column_count(self.sqliteStatement);
+}
+
+- (void)logBindFailed {
+    [self rollback];
+    NSLog(@"bind failed: %s", sqlite3_errmsg(self.sqlite));
+}
+
+- (void)rollback {
+    if ([self.transactionDelegate respondsToSelector:@selector(rollback)]) {
+        [self.transactionDelegate rollback];
+    }
+}
+
 #pragma mark Core
 
 - (BOOL)step {
@@ -47,11 +68,12 @@
         if (self.resultColumns == nil) {
             NSMutableDictionary *columns = [NSMutableDictionary dictionary];
             for (int i = 0; i < self.columnCount; i++) {
-                columns[[self getColumnNameOnIndex:i]] = [NSNumber numberWithInt:i];
+                columns[[self getColumnNameForIndex:i]] = [NSNumber numberWithInt:i];
             }
             self.resultColumns = columns;
         }
     } else if (stepResult != SQLITE_DONE) {
+        [self rollback];
         NSLog(@"step error: %s", sqlite3_errmsg(self.sqlite));
     }
     return result;
@@ -67,194 +89,176 @@
 
 #pragma mark Binding (index)
 
-- (void)bindNULLOnIndex:(int)index {
+- (void)bindNULLForIndex:(int)index {
     if (sqlite3_bind_null(self.sqliteStatement, index) != SQLITE_OK) {
         [self logBindFailed];
     }
 }
 
-- (void)bindIntegerOnIndex:(int)index value:(NSInteger)value {
+- (void)bindInteger:(NSInteger)value forIndex:(int)index {
     if (sqlite3_bind_int64(self.sqliteStatement, index, value) != SQLITE_OK) {
         [self logBindFailed];
     }
 }
 
-- (void)bindStringOnIndex:(int)index value:(NSString *)value {
-    if (sqlite3_bind_text(self.sqliteStatement, index, value.UTF8String, -1, SQLITE_STATIC) != SQLITE_OK) {
-        [self logBindFailed];
-    }
-}
-
-- (void)bindStringOrNULLOnIndex:(int)index value:(NSString *)value {
+- (void)bindString:(nullable NSString *)value forIndex:(int)index {
     if (value == nil) {
-        [self bindNULLOnIndex:index];
+        [self bindNULLForIndex:index];
     } else {
-        [self bindStringOnIndex:index value:value];
+        if (sqlite3_bind_text(self.sqliteStatement, index, value.UTF8String, -1, SQLITE_STATIC) != SQLITE_OK) {
+            [self logBindFailed];
+        }
     }
 }
 
-- (void)bindDoubleOnIndex:(int)index value:(double)value {
+- (void)bindDouble:(double)value forIndex:(int)index {
     if (sqlite3_bind_double(self.sqliteStatement, index, value) != SQLITE_OK) {
         [self logBindFailed];
     }
 }
 
-- (void)bindBOOLOnIndex:(int)index value:(BOOL)value {
+- (void)bindBOOL:(BOOL)value forIndex:(int)index {
     if (sqlite3_bind_int(self.sqliteStatement, index, value) != SQLITE_OK) {
         [self logBindFailed];
     }
 }
 
-- (void)bindDataOnIndex:(int)index value:(NSData *)value {
-    if (sqlite3_bind_blob(self.sqliteStatement, index, value.bytes, (int)value.length, SQLITE_TRANSIENT) != SQLITE_OK) {
-        [self logBindFailed];
-    }
-}
-
-- (void)bindDataOrNULLOnIndex:(int)index value:(NSData *)value {
+- (void)bindData:(nullable NSData *)value forIndex:(int)index {
     if (value == nil) {
-        [self bindNULLOnIndex:index];
+        [self bindNULLForIndex:index];
     } else {
-        [self bindDataOnIndex:index value:value];
+        if (sqlite3_bind_blob(self.sqliteStatement, index, value.bytes, (int)value.length, SQLITE_TRANSIENT) != SQLITE_OK) {
+            [self logBindFailed];
+        }
     }
 }
 
-- (void)bindParameterOnIndex:(int)index value:(AKYParameter *)value {
+- (void)bindParameter:(AKYParameter *)value forIndex:(int)index {
     switch (value.type) {
         case AKYDataTypeNull:
-            [self bindNULLOnIndex:index];
+            [self bindNULLForIndex:index];
             break;
         case AKYDataTypeString:
-            [self bindStringOnIndex:index value:(NSString *)value.value];
+            [self bindString:(NSString *)value.value forIndex:index];
             break;
         case AKYDataTypeInteger:
-            [self bindIntegerOnIndex:index value:((NSNumber *)value.value).integerValue];
+            [self bindInteger:((NSNumber *)value.value).integerValue forIndex:index];
             break;
         case AKYDataTypeDouble:
-            [self bindDoubleOnIndex:index value:((NSNumber *)value.value).doubleValue];
+            [self bindDouble:((NSNumber *)value.value).doubleValue forIndex:index];
             break;
         case AKYDataTypeBool:
-            [self bindBOOLOnIndex:index value:((NSNumber *)value.value).boolValue];
+            [self bindBOOL:((NSNumber *)value.value).boolValue forIndex:index];
             break;
         case AKYDataTypeData:
-            [self bindDataOnIndex:index value:(NSData *)value.value];
+            [self bindData:(NSData *)value.value forIndex:index];
             break;
     }
 }
 
 #pragma mark Binding (name)
 
-- (void)bindNULLWithName:(NSString *)name {
+- (void)bindNULLForName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindNULLOnIndex:index];
+    [self bindNULLForIndex:index];
 }
 
-- (void)bindIntegerWithName:(NSString *)name value:(NSInteger)value {
+- (void)bindInteger:(NSInteger)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindIntegerOnIndex:index value:value];
+    [self bindInteger:value forIndex:index];
 }
 
-- (void)bindStringWithName:(NSString *)name value:(NSString *)value {
+- (void)bindString:(nullable NSString *)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindStringOnIndex:index value:value];
+    [self bindString:value forIndex:index];
 }
 
-- (void)bindStringOrNULLWithName:(NSString *)name value:(NSString *)value {
+- (void)bindDouble:(double)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindStringOrNULLOnIndex:index value:value];
+    [self bindDouble:value forIndex:index];
 }
 
-- (void)bindDoubleWithName:(NSString *)name value:(double)value {
+- (void)bindBOOL:(BOOL)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindDoubleOnIndex:index value:value];
+    [self bindBOOL:value forIndex:index];
 }
 
-- (void)bindBOOLWithName:(NSString *)name value:(BOOL)value {
+- (void)bindData:(nullable NSData *)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindBOOLOnIndex:index value:value];
+    [self bindData:value forIndex:index];
 }
 
-- (void)bindDataWithName:(NSString *)name value:(NSData *)value {
+- (void)bindParameter:(AKYParameter *)value forName:(NSString *)name {
     int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindDataOnIndex:index value:value];
-}
-
-- (void)bindDataOrNULLWithName:(NSString *)name value:(NSData *)value {
-    int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindDataOrNULLOnIndex:index value:value];
-}
-
-- (void)bindParameterWithName:(NSString *)name value:(AKYParameter *)value {
-    int index = sqlite3_bind_parameter_index(self.sqliteStatement, name.UTF8String);
-    [self bindParameterOnIndex:index value:value];
+    [self bindParameter:value forIndex:index];
 }
 
 #pragma mark Result (index)
 
-- (BOOL)isColumnNULLOnIndex:(int)index {
+- (BOOL)isNULLForIndex:(int)index {
     return sqlite3_column_type(self.sqliteStatement, index) == SQLITE_NULL;
 }
 
-- (NSString *)getColumnNameOnIndex:(int)index {
+- (NSString *)getColumnNameForIndex:(int)index {
     return @((const char *)sqlite3_column_name(self.sqliteStatement, index));
 }
 
-- (NSInteger)getColumnIntegerOnIndex:(int)index {
+- (NSInteger)getIntegerForIndex:(int)index {
     return sqlite3_column_int64(self.sqliteStatement, index);
 }
 
-- (NSInteger)getColumnIntegerOrDefaultOnIndex:(int)index {
-    if ([self isColumnNULLOnIndex:index]) {
+- (NSInteger)getIntegerOrDefaultForIndex:(int)index {
+    if ([self isNULLForIndex:index]) {
         return 0;
     } else {
-        return [self getColumnIntegerOnIndex:index];
+        return [self getIntegerForIndex:index];
     }
 }
 
-- (NSString *)getColumnStringOnIndex:(int)index {
+- (NSString *)getStringForIndex:(int)index {
     return @((const char *)sqlite3_column_text(self.sqliteStatement, index));
 }
 
-- (NSString *)getColumnStringOrDefaultOnIndex:(int)index {
-    if ([self isColumnNULLOnIndex:index]) {
+- (NSString *)getStringOrDefaultForIndex:(int)index {
+    if ([self isNULLForIndex:index]) {
         return nil;
     } else {
-        return [self getColumnStringOnIndex:index];
+        return [self getStringForIndex:index];
     }
 }
 
-- (double)getColumnDoubleOnIndex:(int)index {
+- (double)getDoubleForIndex:(int)index {
     return sqlite3_column_double(self.sqliteStatement, index);
 }
 
-- (BOOL)getColumnBOOLOnIndex:(int)index {
+- (BOOL)getBOOLForIndex:(int)index {
     return sqlite3_column_int(self.sqliteStatement, index);
 }
 
-- (BOOL)getColumnBOOLOrDefaultOnIndex:(int)index {
-    if ([self isColumnNULLOnIndex:index]) {
+- (BOOL)getBOOLOrDefaultForIndex:(int)index {
+    if ([self isNULLForIndex:index]) {
         return NO;
     } else {
-        return [self getColumnBOOLOnIndex:index];
+        return [self getBOOLForIndex:index];
     }
 }
 
-- (NSData *)getColumnDataOnIndex:(int)index {
+- (NSData *)getDataForIndex:(int)index {
     int length = sqlite3_column_bytes(self.sqliteStatement, index);
     return [NSData dataWithBytes:sqlite3_column_blob(self.sqliteStatement, index) length:length];
 }
 
-- (NSObject *)getColumnValueOnIndex:(int)index {
+- (NSObject *)getValueForIndex:(int)index {
     int dataType = sqlite3_column_type(self.sqliteStatement, index);
     switch (dataType) {
         case SQLITE_INTEGER:
-            return [NSNumber numberWithInteger:[self getColumnIntegerOnIndex:index]];
+            return [NSNumber numberWithInteger:[self getIntegerForIndex:index]];
         case SQLITE_FLOAT:
-            return [NSNumber numberWithDouble:[self getColumnDoubleOnIndex:index]];
+            return [NSNumber numberWithDouble:[self getDoubleForIndex:index]];
         case SQLITE_TEXT:
-            return [self getColumnStringOnIndex:index];
+            return [self getStringForIndex:index];
         case SQLITE_BLOB:
-            return [self getColumnDataOnIndex:index];
+            return [self getDataForIndex:index];
         case SQLITE_NULL:
         default:
             return nil;
@@ -263,68 +267,54 @@
 
 #pragma mark Result (name)
 
-- (BOOL)isColumnNULLWithName:(NSString *)name {
+- (BOOL)isNULLForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self isColumnNULLOnIndex:index];
+    return [self isNULLForIndex:index];
 }
 
-- (NSInteger)getColumnIntegerWithName:(NSString *)name {
+- (NSInteger)getIntegerForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnIntegerOnIndex:index];
+    return [self getIntegerForIndex:index];
 }
 
-- (NSInteger)getColumnIntegerOrDefaultWithName:(NSString *)name {
+- (NSInteger)getIntegerOrDefaultForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnIntegerOrDefaultOnIndex:index];
+    return [self getIntegerOrDefaultForIndex:index];
 }
 
-- (NSString *)getColumnStringWithName:(NSString *)name {
+- (NSString *)getStringForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnStringOnIndex:index];
+    return [self getStringForIndex:index];
 }
 
-- (NSString *)getColumnStringOrDefaultWithName:(NSString *)name {
+- (NSString *)getStringOrDefaultForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnStringOrDefaultOnIndex:index];
+    return [self getStringOrDefaultForIndex:index];
 }
 
-- (double)getColumnDoubleWithName:(NSString *)name {
+- (double)getDoubleForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnDoubleOnIndex:index];
+    return [self getDoubleForIndex:index];
 }
 
-- (BOOL)getColumnBOOLWithName:(NSString *)name {
+- (BOOL)getBOOLForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnBOOLOnIndex:index];
+    return [self getBOOLForIndex:index];
 }
 
-- (BOOL)getColumnBOOLOrDefaultWitnName:(NSString *)name {
+- (BOOL)getBOOLOrDefaultForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnBOOLOrDefaultOnIndex:index];
+    return [self getBOOLOrDefaultForIndex:index];
 }
 
-- (NSData *)getColumnDataWithName:(NSString *)name {
+- (NSData *)getDataForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnDataOnIndex:index];
+    return [self getDataForIndex:index];
 }
 
-- (NSObject *)getColumnValueWithName:(NSString *)name {
+- (NSObject *)getValueForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
-    return [self getColumnValueOnIndex:index];
-}
-
-#pragma mark Helpers
-
-- (NSString *)expandedQuery {
-    return @((char *)sqlite3_expanded_sql(self.sqliteStatement));
-}
-
-- (int)columnCount {
-    return sqlite3_column_count(self.sqliteStatement);
-}
-
-- (void)logBindFailed {
-    NSLog(@"bind failed: %s", sqlite3_errmsg(self.sqlite));
+    return [self getValueForIndex:index];
 }
 
 @end
