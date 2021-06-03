@@ -45,21 +45,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		06D6BF076466B236EB9188D1FBD2AC97 /* AKYSqlite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = AKYSqlite.framework; path = AKYSqlite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D6BF076466B236EB9188D1FBD2AC97 /* AKYSqlite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AKYSqlite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		114AC52328C92C95747CF8113A364DD4 /* Pods-AKYSqlite_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AKYSqlite_Example-dummy.m"; sourceTree = "<group>"; };
 		1171529A53CDBF58881E731692886FF9 /* Pods-AKYSqlite_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AKYSqlite_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		1211C3709CC6F9B2AA6B7DE136508BD9 /* Pods-AKYSqlite_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AKYSqlite_Example-frameworks.sh"; sourceTree = "<group>"; };
-		1254A5C9469F31854491295EB146062A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
+		1254A5C9469F31854491295EB146062A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		14739A2BD977941E1E0B6320472DD036 /* AKYDatabase.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AKYDatabase.m; path = AKYSqlite/Classes/AKYDatabase.m; sourceTree = "<group>"; };
 		16B49F62E972249B4E0E5DF173CAB82B /* AKYParameter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AKYParameter.h; path = AKYSqlite/Classes/AKYParameter.h; sourceTree = "<group>"; };
 		1D273A11145A3186F4FB83F6ADB9BF75 /* AKYParameter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AKYParameter.m; path = AKYSqlite/Classes/AKYParameter.m; sourceTree = "<group>"; };
 		207180211757DB939F36E871D17DC553 /* AKYSqlite.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AKYSqlite.modulemap; sourceTree = "<group>"; };
 		2DDABBEAE4D59F0C7F29F028E6F890E3 /* Pods-AKYSqlite_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AKYSqlite_Tests.modulemap"; sourceTree = "<group>"; };
 		3099C906DC156B1599D26ECCF1DF1DA6 /* Pods-AKYSqlite_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AKYSqlite_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		32D8ECE7886FBBA90AFC87AFD337D23D /* Pods_AKYSqlite_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AKYSqlite_Example.framework; path = "Pods-AKYSqlite_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		32D8ECE7886FBBA90AFC87AFD337D23D /* Pods_AKYSqlite_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AKYSqlite_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		40E6BC200F99B0C04349C04218DBB950 /* Pods-AKYSqlite_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AKYSqlite_Example-Info.plist"; sourceTree = "<group>"; };
 		414F7C953F4D44862C1691439F53C74B /* AKYDatabase.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AKYDatabase.h; path = AKYSqlite/Classes/AKYDatabase.h; sourceTree = "<group>"; };
-		51AC5B29D5E05E3ECD96B1E7A8F1F74D /* Pods_AKYSqlite_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AKYSqlite_Tests.framework; path = "Pods-AKYSqlite_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51AC5B29D5E05E3ECD96B1E7A8F1F74D /* Pods_AKYSqlite_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AKYSqlite_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		547C2C8B33D11311AD811E7AAACE5862 /* AKYSqlite-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AKYSqlite-umbrella.h"; sourceTree = "<group>"; };
 		5686C108296E782AFBCA89638D594895 /* AKYSqlite-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AKYSqlite-Info.plist"; sourceTree = "<group>"; };
 		5B229A585B1A0A918E829FBA57A33CD2 /* Pods-AKYSqlite_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AKYSqlite_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
@@ -70,9 +70,9 @@
 		774F089EBB8A981B7A02A47A0D967A0B /* Pods-AKYSqlite_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AKYSqlite_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		7A94CB933B9BA9D8F54818CB209CBF40 /* Pods-AKYSqlite_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AKYSqlite_Example.release.xcconfig"; sourceTree = "<group>"; };
 		7BA67C139B813D35498A7B9834C71DA6 /* Pods-AKYSqlite_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AKYSqlite_Tests-umbrella.h"; sourceTree = "<group>"; };
-		876220E148A5E0A55520A61AF845ADB8 /* AKYSqlite.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = AKYSqlite.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		94D5B7BAD765F726C1DE0215E78B7EA7 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; path = LICENSE; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		876220E148A5E0A55520A61AF845ADB8 /* AKYSqlite.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = AKYSqlite.podspec; sourceTree = "<group>"; tabWidth = 2; };
+		94D5B7BAD765F726C1DE0215E78B7EA7 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9FDA943D504A6E9BBCF33B94A54D2D88 /* Pods-AKYSqlite_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AKYSqlite_Tests-dummy.m"; sourceTree = "<group>"; };
 		C117DF0BAFDBABC12E012F25E100767D /* AKYSqlite.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AKYSqlite.m; path = AKYSqlite/Classes/AKYSqlite.m; sourceTree = "<group>"; };
 		CF275F48B3DE1026A022743740DB2C7E /* AKYSqlite-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AKYSqlite-prefix.pch"; sourceTree = "<group>"; };
@@ -719,8 +719,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRIP_INSTALLED_PRODUCT = NO;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 				SYMROOT = "${SRCROOT}/../build";
 			};
