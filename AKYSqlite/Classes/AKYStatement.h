@@ -1,10 +1,10 @@
 //
-//  akyStatement.h
-//  akySqlite
+//  AKYStatement.h
+//  AKYSqlite
 //
 //  Created by Aikyuichi on 12/10/17.
 //  MIT License
-//  Copyright (c) 2017 Aikyuichi
+//  Copyright (c) 2021 Aikyuichi
 //  
 
 #import <Foundation/Foundation.h>
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<AKYTransaction> transactionDelegate;
 
-+ (instancetype)statementWithSqlite:(sqlite3 *)sqlite query:(NSString *)query;
++ (nullable instancetype)statementWithSqlite:(sqlite3 *)sqlite query:(NSString *)query;
 
 #pragma mark - Helpers
 
@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSString *uncompiledSql;
 
 @property (nonatomic, readonly) int columnCount;
+
+@property (nonatomic, readonly) BOOL failed;
 
 #pragma mark Core
 
@@ -85,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)getStringForIndex:(int)index;
 
-- (NSString *)getStringOrDefaultForIndex:(int)index;
+- (nullable NSString *)getStringOrDefaultForIndex:(int)index;
 
 - (double)getDoubleForIndex:(int)index;
 
@@ -95,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSData *)getDataForIndex:(int)index;
 
-- (NSObject *)getValueForIndex:(int)index;
+- (nullable NSObject *)getValueForIndex:(int)index;
 
 #pragma mark Result (name)
 
@@ -107,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)getStringForName:(NSString *)name;
 
-- (NSString *)getStringOrDefaultForName:(NSString *)name;
+- (nullable NSString *)getStringOrDefaultForName:(NSString *)name;
 
 - (double)getDoubleForName:(NSString *)name;
 
@@ -117,7 +119,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSData *)getDataForName:(NSString *)name;
 
-- (NSObject *)getValueForName:(NSString *)name;
+- (nullable NSObject *)getValueForName:(NSString *)name;
 
 @end
 

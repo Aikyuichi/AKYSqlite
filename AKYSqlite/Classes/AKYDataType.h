@@ -1,9 +1,10 @@
 //
 //  AKYDataType.h
-//  bitacora
+//  AKYSqlite
 //
-//  Created by Luis Mosquera on 10/5/21.
-//  Copyright © 2021 Aikyu - Systems. All rights reserved.
+//  Created by Aikyuichi on 10/5/21.
+//  MIT License
+//  Copyright (c) 2021 Aikyuichi
 //
 
 #ifndef AKYDataType_h

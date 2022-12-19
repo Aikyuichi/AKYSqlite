@@ -1,10 +1,10 @@
 //
 //  AKYSqlite.h
-//  scoreMAMA
+//  AKYSqlite
 //
 //  Created by Aikyuichi on 12/10/17.
 //  MIT License
-//  Copyright (c) 2017 Aikyuichi
+//  Copyright (c) 2021 Aikyuichi
 // 
 
 #import <Foundation/Foundation.h>
@@ -20,9 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)registerDatabaseWithName:(NSString *)name fromDocumentDirectoryForKey:(NSString *)key;
 
++ (void)registerDatabaseWithName:(NSString *)name copyFromMainBundleForKey:(NSString *)key;
+
 + (void)unregisterDatabaseForKey:(NSString *)key;
 
 + (NSString *)databasePathForKey:(NSString *)key;
+
++ (void)runUpdaterForKey:(NSString *)key;
 
 + (void)logError;
 

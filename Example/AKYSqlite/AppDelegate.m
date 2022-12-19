@@ -23,7 +23,7 @@
         [manager removeItemAtPath:dbDocPath error:NULL];
     }
     [manager copyItemAtPath:dbMainPath  toPath:dbDocPath error:NULL];
-    
+    NSLog(@"%@", dbMainPath);
     return YES;
 }
 

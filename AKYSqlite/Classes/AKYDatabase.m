@@ -1,10 +1,10 @@
 //
-//  akyDatabase.m
-//  akySqlite
+//  AKYDatabase.m
+//  AKYSqlite
 //
 //  Created by Aikyuichi on 12/10/17.
 //  MIT License
-//  Copyright (c) 2017 Aikyuichi
+//  Copyright (c) 2021 Aikyuichi
 //
 
 #import "AKYDatabase.h"
@@ -94,10 +94,26 @@
     return sqlite3_last_insert_rowid(self.sqlite);
 }
 
+- (NSInteger)userVersion {
+    NSInteger version = 0;
+    AKYStatement *stmt = [self prepareStatement:@"PRAGMA user_version"];
+    if (stmt != nil) {
+        if ([stmt step]) {
+            version = [stmt getIntegerForIndex:0];
+        }
+        [stmt finalize];
+    }
+    return version;
+}
+
 - (AKYStatement *)prepareStatement:(NSString *)query {
     AKYStatement *statement = [AKYStatement statementWithSqlite:self.sqlite query:query];
     if (self.transactional) {
-        statement.transactionDelegate = self;
+        if (statement != nil) {
+            statement.transactionDelegate = self;
+        } else {
+            self.rollbackTransaction = YES;
+        }
     }
     return statement;
 }

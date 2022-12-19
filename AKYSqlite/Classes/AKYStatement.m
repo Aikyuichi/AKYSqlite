@@ -1,10 +1,10 @@
 //
-//  akyStatement.m
-//  akySqlite
+//  AKYStatement.m
+//  AKYSqlite
 //
 //  Created by Aikyuichi on 12/10/17.
 //  MIT License
-//  Copyright (c) 2017 Aikyuichi
+//  Copyright (c) 2021 Aikyuichi
 //  
 
 #import "AKYStatement.h"
@@ -15,12 +15,13 @@
 @property (nonatomic) sqlite3_stmt *sqliteStatement;
 @property (nonatomic) NSDictionary<NSString *, NSNumber *> *resultColumns;
 @property (nonatomic, readwrite) NSString *uncompiledSql;
+@property (nonatomic, readwrite) BOOL failed;
 
 @end
 
 @implementation AKYStatement
 
-+ (instancetype)statementWithSqlite:(sqlite3 *)sqlite query:(NSString *)query {
++ (nullable instancetype)statementWithSqlite:(sqlite3 *)sqlite query:(NSString *)query {
     AKYStatement *statement = nil;
     sqlite3_stmt *sqliteStatement = nil;
     const char *uncompiledSql = NULL;
@@ -73,6 +74,7 @@
             self.resultColumns = columns;
         }
     } else if (stepResult != SQLITE_DONE) {
+        self.failed = YES;
         [self rollback];
         NSLog(@"step error: %s", sqlite3_errmsg(self.sqlite));
     }
@@ -219,7 +221,7 @@
     return @((const char *)sqlite3_column_text(self.sqliteStatement, index));
 }
 
-- (NSString *)getStringOrDefaultForIndex:(int)index {
+- (nullable NSString *)getStringOrDefaultForIndex:(int)index {
     if ([self isNULLForIndex:index]) {
         return nil;
     } else {
@@ -248,7 +250,7 @@
     return [NSData dataWithBytes:sqlite3_column_blob(self.sqliteStatement, index) length:length];
 }
 
-- (NSObject *)getValueForIndex:(int)index {
+- (nullable NSObject *)getValueForIndex:(int)index {
     int dataType = sqlite3_column_type(self.sqliteStatement, index);
     switch (dataType) {
         case SQLITE_INTEGER:
@@ -287,7 +289,7 @@
     return [self getStringForIndex:index];
 }
 
-- (NSString *)getStringOrDefaultForName:(NSString *)name {
+- (nullable NSString *)getStringOrDefaultForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
     return [self getStringOrDefaultForIndex:index];
 }
@@ -312,7 +314,7 @@
     return [self getDataForIndex:index];
 }
 
-- (NSObject *)getValueForName:(NSString *)name {
+- (nullable NSObject *)getValueForName:(NSString *)name {
     int index = self.resultColumns[name].intValue;
     return [self getValueForIndex:index];
 }

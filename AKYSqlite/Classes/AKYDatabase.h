@@ -1,10 +1,10 @@
 //
-//  akyDatabase.h
-//  akySqlite
+//  AKYDatabase.h
+//  AKYSqlite
 //
 //  Created by Aikyuichi on 12/10/17.
 //  MIT License
-//  Copyright (c) 2017 Aikyuichi
+//  Copyright (c) 2021 Aikyuichi
 //
 
 #import <Foundation/Foundation.h>
@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AKYDatabase : NSObject
 
 @property (nonatomic, readonly) NSInteger lastInsertRowId;
+
+@property (nonatomic, readonly) NSInteger userVersion;
 
 + (instancetype)databaseAtPath:(NSString *)path;
 
