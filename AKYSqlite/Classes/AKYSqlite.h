@@ -32,4 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+typedef NS_ENUM(NSUInteger, AKYUpdaterErrorLevel) {
+    AKYUpdaterErrorLevelSkip,
+    AKYUpdaterErrorLevelLog,
+};
+
 NS_ASSUME_NONNULL_END

@@ -63,8 +63,13 @@ NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
     }
     for (NSDictionary *update in updates) {
         if (![self executeUpdate:update]) {
-            NSLog(@"update failed: %@", update);
-            break;
+            NSNumber * errorLevel = [update objectForKey:@"errorLevel"];
+            if (errorLevel.integerValue == AKYUpdaterErrorLevelSkip) {
+                NSLog(@"update failed but skipped: %@", update);
+            } else {
+                NSLog(@"update failed: %@", update);
+                break;
+            }
         }
     }
 }
@@ -80,9 +85,9 @@ NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
                 NSString *dbKey = [stmt getStringForName:@"db_key"];
                 NSNumber *dbVersion = [NSNumber numberWithInteger:[stmt getIntegerForName:@"db_version"]];
                 NSString *sql = [stmt getStringForName:@"sql"];
-                NSNumber *error_level = [NSNumber numberWithInteger:[stmt getIntegerForName:@"error_level"]];
+                NSNumber *errorLevel = [NSNumber numberWithInteger:[stmt getIntegerForName:@"error_level"]];
                 NSString *date = [stmt getStringForName:@"date"];
-                [updates addObject:@{@"id":codigo, @"dbVersion":dbVersion, @"dbKey":dbKey, @"sql":sql, @"errorLevel":error_level, @"date":date}];
+                [updates addObject:@{@"id":codigo, @"dbVersion":dbVersion, @"dbKey":dbKey, @"sql":sql, @"errorLevel":errorLevel, @"date":date}];
             }
             [stmt finalize];
         }
@@ -95,6 +100,7 @@ NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
     BOOL result = NO;
     NSString *dbKey = [update objectForKey:@"dbKey"];
     NSNumber *dbVersion = [update objectForKey:@"dbVersion"];
+    NSNumber *errorLevel = [update objectForKey:@"errorLevel"];
     if ([self existsDatabaseWithKey:dbKey]) {
         AKYDatabase *db = [AKYDatabase databaseForKey:dbKey];
         if ([db openTransaction]) {
@@ -107,7 +113,7 @@ NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
                         [stmt step];
                         [stmt finalize];
                         result = stmt != nil && !stmt.failed;
-                        if (!result) {
+                        if (errorLevel.integerValue > AKYUpdaterErrorLevelSkip && !result) {
                             break;
                         }
                     }
