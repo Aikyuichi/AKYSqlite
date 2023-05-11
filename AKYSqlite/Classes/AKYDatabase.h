@@ -40,9 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)executeQuery:(NSString *)query;
 
-- (void)executeQuery:(NSString *)query parameters:(NSArray<AKYParameter *> *)parameters;
+- (void)executeStatement:(NSString *)query parameters:(NSArray<AKYParameter *> *)parameters;
 
-- (void)executeQuery:(NSString *)query namedParameters:(NSDictionary<NSString *,AKYParameter *> *)parameters;
+- (void)executeStatement:(NSString *)query namedParameters:(NSDictionary<NSString *,AKYParameter *> *)parameters;
 
 - (NSArray<NSDictionary<NSString *,NSObject *> *> *)select:(NSString *)query parameters:(NSArray<AKYParameter *> *)parameters;
 

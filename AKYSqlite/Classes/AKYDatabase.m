@@ -14,7 +14,9 @@
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic) sqlite3 *sqlite;
 @property (nonatomic) BOOL transactional;
+@property (nonatomic) BOOL isOpen;
 @property (nonatomic) BOOL rollbackTransaction;
+@property (nonatomic) NSMutableArray<NSString *> *deferredAttachments;
 
 @end
 
@@ -23,6 +25,7 @@
 + (instancetype)databaseAtPath:(NSString *)path {
     AKYDatabase *database = [[self alloc] init];
     database.path = path;
+    database.deferredAttachments = [NSMutableArray array];
     return database;
 }
 
@@ -38,6 +41,11 @@
         NSLog(@"error: %s", sqlite3_errmsg(self.sqlite));
         return NO;
     }
+    self.isOpen = YES;
+    for (NSString *attachement in self.deferredAttachments) {
+        [self executeQuery:attachement];
+    }
+    [self.deferredAttachments removeAllObjects];
     return YES;
 }
 
@@ -46,6 +54,11 @@
         NSLog(@"error: %s", sqlite3_errmsg(self.sqlite));
         return NO;
     }
+    self.isOpen = YES;
+    for (NSString *attachement in self.deferredAttachments) {
+        [self executeQuery:attachement];
+    }
+    [self.deferredAttachments removeAllObjects];
     return YES;
 }
 
@@ -78,7 +91,11 @@
 
 - (void)attachDatabase:(AKYDatabase *)database withSchema:(NSString *)schema {
     NSString *sql = [NSString stringWithFormat:@"ATTACH DATABASE '%@' AS %@", database.path, schema];
-    [self executeQuery:sql];
+    if (self.isOpen) {
+        [self executeQuery:sql];
+    } else {
+        [self.deferredAttachments addObject:sql];
+    }
 }
 
 - (void)detachDatabaseWithSchema:(NSString *)schema {
@@ -121,38 +138,33 @@
 - (void)executeQuery:(NSString *)query {
     char *error;
     if (sqlite3_exec(self.sqlite, query.UTF8String, NULL, NULL, &error) != SQLITE_OK) {
+        self.rollbackTransaction = YES;
         NSLog(@"execute query failed: %s", error);
         sqlite3_free(error);
     }
 }
 
-- (void)executeQuery:(NSString *)query parameters:(NSArray<AKYParameter *> *)parameters {
-    while (query != nil) {
-        AKYStatement *statement = [self prepareStatement:query];
-        query = statement.uncompiledSql;
-        if (statement != nil) {
-            for (int i = 0; i < parameters.count; i++) {
-                AKYParameter *parameter = parameters[i];
-                [statement bindParameter:parameter forIndex:i + 1];
-            }
-            [statement step];
-            [statement finalize];
+- (void)executeStatement:(NSString *)query parameters:(NSArray<AKYParameter *> *)parameters {
+    AKYStatement *statement = [self prepareStatement:query];
+    if (statement != nil) {
+        for (int i = 0; i < parameters.count; i++) {
+            AKYParameter *parameter = parameters[i];
+            [statement bindParameter:parameter forIndex:i + 1];
         }
+        [statement step];
+        [statement finalize];
     }
 }
 
-- (void)executeQuery:(NSString *)query namedParameters:(NSDictionary<NSString *,AKYParameter *> *)parameters {
-    while (query != nil) {
-        AKYStatement *statement = [self prepareStatement:query];
-        query = statement.uncompiledSql;
-        if (statement != nil) {
-            for (NSString * key in parameters.allKeys) {
-                AKYParameter *parameter = parameters[key];
-                [statement bindParameter:parameter forName:key];
-            }
-            [statement step];
-            [statement finalize];
+- (void)executeStatement:(NSString *)query namedParameters:(NSDictionary<NSString *,AKYParameter *> *)parameters {
+    AKYStatement *statement = [self prepareStatement:query];
+    if (statement != nil) {
+        for (NSString * key in parameters.allKeys) {
+            AKYParameter *parameter = parameters[key];
+            [statement bindParameter:parameter forName:key];
         }
+        [statement step];
+        [statement finalize];
     }
 }
 

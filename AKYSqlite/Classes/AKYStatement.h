@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSString *uncompiledSql;
 
+@property (nonatomic, readonly) int parameterCount;
+
 @property (nonatomic, readonly) int columnCount;
 
 @property (nonatomic, readonly) BOOL failed;

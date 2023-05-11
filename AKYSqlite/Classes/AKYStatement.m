@@ -31,6 +31,7 @@
         statement.sqliteStatement = sqliteStatement;
         if (strlen(uncompiledSql) > 0) {
             statement.uncompiledSql = @(uncompiledSql);
+            NSLog(@"warning: uncompiled sql - %@", statement.uncompiledSql);
         }
     } else {
         NSLog(@"prepare statement failed: %s", sqlite3_errmsg(sqlite));
@@ -42,6 +43,10 @@
 
 - (NSString *)expandedQuery {
     return @((char *)sqlite3_expanded_sql(self.sqliteStatement));
+}
+
+- (int)parameterCount {
+    return sqlite3_bind_parameter_count(self.sqliteStatement);
 }
 
 - (int)columnCount {
