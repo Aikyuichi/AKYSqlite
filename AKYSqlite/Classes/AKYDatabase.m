@@ -45,7 +45,6 @@
     for (NSString *attachement in self.deferredAttachments) {
         [self executeQuery:attachement];
     }
-    [self.deferredAttachments removeAllObjects];
     return YES;
 }
 
@@ -58,7 +57,6 @@
     for (NSString *attachement in self.deferredAttachments) {
         [self executeQuery:attachement];
     }
-    [self.deferredAttachments removeAllObjects];
     return YES;
 }
 
@@ -87,6 +85,7 @@
 - (void)close {
     [self closeTransaction];
     sqlite3_close(self.sqlite);
+    self.isOpen = NO;
 }
 
 - (void)attachDatabase:(AKYDatabase *)database withSchema:(NSString *)schema {
