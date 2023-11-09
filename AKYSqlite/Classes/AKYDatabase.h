@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)detachDatabaseWithSchema:(NSString *)schema;
 
-- (AKYStatement *)prepareStatement:(NSString *)query;
+- (nullable AKYStatement *)prepareStatement:(NSString *)query;
 
 - (void)executeQuery:(NSString *)query;
 

@@ -106,7 +106,7 @@ NSString *const AKYSQLITE_DB_PATHS = @"AKYSqlite_db_paths";
         if ([db openTransaction]) {
             if (db.userVersion <= dbVersion.integerValue) {
                 NSString *sql = [update objectForKey:@"sql"];
-                NSArray *statements = [sql componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@";"]];
+                NSArray *statements = [sql componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n"]];
                 for (NSString *statement in statements) {
                     if (statement.length > 0) {
                         AKYStatement *stmt = [db prepareStatement:statement];

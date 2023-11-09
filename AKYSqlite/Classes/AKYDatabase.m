@@ -122,7 +122,7 @@
     return version;
 }
 
-- (AKYStatement *)prepareStatement:(NSString *)query {
+- (nullable AKYStatement *)prepareStatement:(NSString *)query {
     AKYStatement *statement = [AKYStatement statementWithSqlite:self.sqlite query:query];
     if (self.transactional) {
         if (statement != nil) {
